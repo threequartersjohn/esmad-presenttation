@@ -2,6 +2,7 @@ import { Box, VStack } from '@chakra-ui/layout';
 import { useCallback, useEffect, useState } from 'react';
 import { Dot } from '../Dot'
 import { Questions, OpenSource, Slow } from './components';
+import { useKeyboardEvent } from 'react-custom-hooks';
 
 const pages = [
     Questions,
@@ -14,24 +15,8 @@ export const Tips = (props) => {
 
     const handleOnSetActivePage = useCallback((index) => setActivePage(index), []);
 
-    useEffect(() => {
-        const handleKeydownEvent = ({ keyCode }) => {
-            if (keyCode === 37) {
-                setActivePage(Math.min(Math.max(activePage - 1, 0), pages.length - 1))
-            }
-
-            if (keyCode === 39) {
-                setActivePage(Math.min(Math.max(activePage + 1, 0), pages.length - 1))
-            }
-        }
-
-        if (pages.length > 1) {
-            window.addEventListener('keydown', handleKeydownEvent);
-        }
-
-        return () => window.removeEventListener('keydown', handleKeydownEvent);
-
-    }, [activePage])
+    useKeyboardEvent('ArrowLeft', () => setActivePage(Math.min(Math.max(activePage - 1, 0), pages.length - 1)));
+    useKeyboardEvent('ArrowRight', () => setActivePage(Math.min(Math.max(activePage + 1, 0), pages.length - 1)));
 
     return (
         <VStack

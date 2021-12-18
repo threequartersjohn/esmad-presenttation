@@ -11,25 +11,6 @@ export const Networking = (props) => {
     const [activePage, setActivePage] = useState(0);
 
     const handleOnSetActivePage = useCallback((index) => setActivePage(index), [])
-
-    useEffect(() => {
-        const handleKeydownEvent = ({ keyCode }) => {
-            if (keyCode === 37) {
-                setActivePage(Math.min(Math.max(activePage - 1, 0), pages.length - 1))
-            }
-
-            if (keyCode === 39) {
-                setActivePage(Math.min(Math.max(activePage + 1, 0), pages.length - 1))
-            }
-        }
-
-        if (pages.length > 1) {
-            window.addEventListener('keydown', handleKeydownEvent);
-        }
-
-        return () => window.removeEventListener('keydown', handleKeydownEvent);
-
-    }, [activePage])
     
     return (
     <VStack 
