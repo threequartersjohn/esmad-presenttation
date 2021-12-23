@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { HStack } from '@chakra-ui/react';
 import { SideNavigation } from '../src/SideNavigation'
 import { Slides } from '../src/Slides/Slides';
-import { useKeyboardEvent } from 'react-custom-hooks';
+import { useKeyboardEvent, useTraverseArray } from '@threequartersjohn/react-custom-hooks';
 
 const slides = [
   'Personal',
@@ -12,11 +12,10 @@ const slides = [
 ]
 
 export default function Home() {
-  const [activeSlide, setActiveSlide] = useState(0);
-  const handleOnSetActiveSlide = useCallback((slide) => setActiveSlide(slide), [])
+  const [_, activeSlideIndex, { setNextActive, setPreviousActive, setActiveIndex }] = useTraverseArray(slides);
 
-  useKeyboardEvent('ArrowUp', () => setActiveSlide(Math.min(Math.max(activeSlide - 1, 0), slides.length - 1)));
-  useKeyboardEvent('ArrowDown', () => setActiveSlide(Math.min(Math.max(activeSlide + 1, 0), slides.length - 1)));
+  useKeyboardEvent('ArrowUp', () => setPreviousActive());
+  useKeyboardEvent('ArrowDown', () => setNextActive());
 
   return (
     <HStack 
@@ -24,11 +23,11 @@ export default function Home() {
       height={ '100vh' }
       width={ '100vw' }>
       <SideNavigation 
-        activeSlide={ activeSlide }
-        onSetActiveSlide={  handleOnSetActiveSlide }
+        activeSlide={ activeSlideIndex }
+        onSetActiveSlide={  setActiveIndex }
         slides={ slides } />
       <Slides 
-        activeSlide={ activeSlide }/>
+        activeSlide={ activeSlideIndex }/>
     </HStack>
   )
 }

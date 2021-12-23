@@ -1,8 +1,7 @@
 import { Box, VStack } from '@chakra-ui/layout';
-import { useCallback, useEffect, useState } from 'react';
 import { Dot } from '../Dot'
 import { Moxy, Uphold } from './components';
-import { useKeyboardEvent } from 'react-custom-hooks';
+import { useKeyboardEvent, useTraverseArray } from '@threequartersjohn/react-custom-hooks';
 
 const pages = [
     Moxy,
@@ -10,12 +9,10 @@ const pages = [
 ];
 
 export const Work = (props) => {
-    const [activePage, setActivePage] = useState(0);
+    const [ActivePage, activePageIndex, { setNextActive, setPreviousActive, setActiveIndex }] = useTraverseArray(pages);
 
-    const handleOnSetActivePage = useCallback((index) => setActivePage(index), []);
-
-    useKeyboardEvent('ArrowLeft', () => setActivePage(Math.min(Math.max(activePage - 1, 0), pages.length - 1)));
-    useKeyboardEvent('ArrowRight', () => setActivePage(Math.min(Math.max(activePage + 1, 0), pages.length - 1)));
+    useKeyboardEvent('ArrowLeft', () => setPreviousActive());
+    useKeyboardEvent('ArrowRight', () => setNextActive());
 
     return (
         <VStack
@@ -23,18 +20,15 @@ export const Work = (props) => {
             paddingY={ '4rem' }
             {...props}>
             <Box>
-                {pages.map((Page, index) => (
-                    activePage === index && 
-                    <Page key={ `page-${index}` } />
-                ))}
+                <ActivePage />
             </Box>
             <Box>
                 {pages.map((_, index) => (
                     <Dot 
                         key={ `dot-${index}` }
-                        isActive={ activePage === index }
+                        isActive={ activePageIndex === index }
                         index={ index } 
-                        onClick={  handleOnSetActivePage }/>
+                        onClick={  setActiveIndex }/>
                 ))}
             </Box>
         </VStack>
